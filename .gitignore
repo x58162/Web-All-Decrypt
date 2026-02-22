@@ -1,0 +1,9 @@
+# Node.js 模組
+node_modules/
+
+# 環境變數
+.env
+
+# PHP session / log / 暫存
+*.log
+*.cache
