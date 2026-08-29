@@ -10,18 +10,10 @@ require_once __DIR__ . "/config.php";
 //==================================================
 // 開獎資料設定
 //
-// 透過 URL 選擇資料表：
-//
 // dailycash.php?lottery=dailycash
 // dailycash.php?lottery=biglottery
 // dailycash.php?lottery=fantasy5
 // dailycash.php?lottery=marksix
-//
-// Database：
-// lottery.dailycash
-// lottery.biglottery
-// lottery.fantasy5
-// lottery.marksix
 //
 //==================================================
 
@@ -32,6 +24,12 @@ $lotteryConfigs =
     [
         "table" =>
             "dailycash",
+
+        "idColumn" =>
+            "Id",
+
+        "ballCount" =>
+            5,
 
         "name" =>
             "今彩539",
@@ -49,6 +47,12 @@ $lotteryConfigs =
         "table" =>
             "biglottery",
 
+        "idColumn" =>
+            "Id",
+
+        "ballCount" =>
+            7,
+
         "name" =>
             "大樂透",
 
@@ -65,6 +69,12 @@ $lotteryConfigs =
         "table" =>
             "fantasy5",
 
+        "idColumn" =>
+            "id",
+
+        "ballCount" =>
+            5,
+
         "name" =>
             "天天樂",
 
@@ -80,6 +90,12 @@ $lotteryConfigs =
     [
         "table" =>
             "marksix",
+
+        "idColumn" =>
+            "Id",
+
+        "ballCount" =>
+            7,
 
         "name" =>
             "六合彩",
@@ -101,9 +117,11 @@ $lotteryConfigs =
 $lotteryType =
     "dailycash";
 
+
 if (
     isset($_GET["lottery"])
-    && is_string($_GET["lottery"])
+    &&
+    is_string($_GET["lottery"])
 )
 {
     $lotteryType =
@@ -119,7 +137,8 @@ if (
     !isset(
         $lotteryConfigs[$lotteryType]
     )
-    || !is_array(
+    ||
+    !is_array(
         $lotteryConfigs[$lotteryType]
     )
 )
@@ -141,10 +160,6 @@ $currentLottery =
 
 //==================================================
 // 資料表名稱
-//
-// 注意：
-// 這裡只能使用上面白名單內的值
-// 不直接使用使用者輸入的 table 名稱
 //==================================================
 
 $tableName =
@@ -152,10 +167,27 @@ $tableName =
 
 
 //==================================================
+// ID 欄位
+//==================================================
+
+$idColumn =
+    $currentLottery["idColumn"];
+
+
+//==================================================
+// 球數
+//==================================================
+
+$ballCount =
+    $currentLottery["ballCount"];
+
+
+//==================================================
 // 每頁 30 筆
 //==================================================
 
-$itemsPerPage = 30;
+$itemsPerPage =
+    30;
 
 
 //==================================================
@@ -182,7 +214,9 @@ if (
 // 取得總筆數
 //==================================================
 
-$totalItems = 0;
+$totalItems =
+    0;
+
 
 try
 {
@@ -213,7 +247,8 @@ catch (
 )
 {
 
-    $totalItems = 0;
+    $totalItems =
+        0;
 
 }
 
@@ -222,7 +257,8 @@ catch (
 // 總頁數
 //==================================================
 
-$totalPages = 0;
+$totalPages =
+    0;
 
 
 if (
@@ -270,15 +306,10 @@ $offset =
 
 //==================================================
 // 取得資料
-//
-// 最新資料在最上面
-//
-// Id DESC
-//
-// 每頁 30 筆
 //==================================================
 
-$results = [];
+$results =
+    [];
 
 
 if (
@@ -289,20 +320,52 @@ if (
     try
     {
 
+        //==================================================
+        // 先取得前 5 顆
+        //==================================================
+
+        $numberFields =
+            "
+            NumberOne,
+            NumberTwo,
+            NumberThree,
+            NumberFour,
+            NumberFive
+            ";
+
+
+        //==================================================
+        // 7 球彩種增加 NumberSix / NumberSeven
+        //==================================================
+
+        if (
+            $ballCount === 7
+        )
+        {
+
+            $numberFields .=
+                ",
+                NumberSix,
+                NumberSeven";
+
+        }
+
+
+        //==================================================
+        // SQL
+        //==================================================
+
         $sql =
             "
             SELECT
-                Id,
+                `$idColumn` AS Id,
                 Dates,
-                NumberOne,
-                NumberTwo,
-                NumberThree,
-                NumberFour,
-                NumberFive
+                $numberFields
 
             FROM lottery.`$tableName`
 
-            ORDER BY Id DESC
+            ORDER BY
+                `$idColumn` DESC
 
             LIMIT :limit
 
@@ -340,18 +403,8 @@ if (
 
 
         //==================================================
-        // 每頁先抓最新 30 筆
-        //
-        // SQL：Id DESC
-        //
-        // 再將這 30 筆反轉
-        //
-        // 最終顯示：
-        // 舊 → 新
-        //
-        // 因此：
-        // 最新資料仍然在第一頁
-        // 但最新資料會顯示在第一頁最下面
+        // 最新資料仍在第一頁
+        // 但頁面由舊 → 新顯示
         //==================================================
 
         $results =
@@ -365,7 +418,8 @@ if (
     )
     {
 
-        $results = [];
+        $results =
+            [];
 
     }
 
@@ -432,7 +486,8 @@ if (
 // JSON-LD
 //==================================================
 
-$schemaItems = [];
+$schemaItems =
+    [];
 
 
 foreach (
@@ -441,28 +496,71 @@ foreach (
 )
 {
 
-    $numbers =
+    //==================================================
+    // 一般球
+    //==================================================
+
+    $normalNumbers =
     [
-        intval(
-            $row["NumberOne"]
-        ),
 
-        intval(
-            $row["NumberTwo"]
-        ),
+        $row["NumberOne"],
 
-        intval(
-            $row["NumberThree"]
-        ),
+        $row["NumberTwo"],
 
-        intval(
-            $row["NumberFour"]
-        ),
+        $row["NumberThree"],
 
-        intval(
-            $row["NumberFive"]
-        )
+        $row["NumberFour"],
+
+        $row["NumberFive"]
+
     ];
+
+
+    //==================================================
+    // 7 球彩種
+    //
+    // NumberSix = 一般球
+    // NumberSeven = 特殊球
+    //==================================================
+
+    $specialNumber =
+        null;
+
+
+    if (
+        $ballCount === 7
+    )
+    {
+
+        $normalNumbers[] =
+            $row["NumberSix"];
+
+
+        $specialNumber =
+            $row["NumberSeven"];
+
+    }
+
+
+    //==================================================
+    // JSON-LD 顯示順序
+    //
+    // 一般球 + 特殊球
+    //==================================================
+
+    $schemaNumbers =
+        $normalNumbers;
+
+
+    if (
+        $specialNumber !== null
+    )
+    {
+
+        $schemaNumbers[] =
+            $specialNumber;
+
+    }
 
 
     $schemaItems[] =
@@ -485,7 +583,7 @@ foreach (
             "｜" .
             implode(
                 ", ",
-                $numbers
+                $schemaNumbers
             )
     ];
 
@@ -518,7 +616,14 @@ $schema =
 <html lang="zh-Hant">
 
 <head>
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<link
+    rel="icon"
+    type="image/x-icon"
+    href="/favicon.ico"
+>
+
+
 <meta charset="UTF-8">
 
 
@@ -657,8 +762,8 @@ body
 
     padding: 20px;
 
-    /* background: #f3f4f6; */
     background: #1a1717;
+
     font-family:
         Arial,
         "Microsoft JhengHei",
@@ -699,7 +804,9 @@ body
 .dailycash-title
 {
     margin: 0;
+
     color: #FFF;
+
     font-size: 26px;
 
     font-weight: bold;
@@ -871,7 +978,7 @@ body
 
 
 /*==================================================
-  球
+  一般球
 ==================================================*/
 
 .ball
@@ -918,6 +1025,24 @@ body
 .order-ball
 {
     background: #ffffff;
+}
+
+
+/*==================================================
+  特殊球
+  大樂透 / 六合彩的 NumberSeven
+==================================================*/
+
+.special-ball
+{
+    background: #000000;
+
+    color: #ffffff;
+
+    border:
+        1px
+        solid
+        #000000;
 }
 
 
@@ -1211,7 +1336,6 @@ require_once __DIR__ . "/menu.php";
 
 <header class="dailycash-header">
 
-
 <h1 class="dailycash-title">
 
 <?= htmlspecialchars(
@@ -1223,7 +1347,6 @@ require_once __DIR__ . "/menu.php";
 開獎結果
 
 </h1>
-
 
 </header>
 
@@ -1269,7 +1392,7 @@ require_once __DIR__ . "/menu.php";
 
 
 <!--==================================================
-     資料
+     每一期
 ==================================================-->
 
 <?php foreach (
@@ -1280,29 +1403,59 @@ require_once __DIR__ . "/menu.php";
 
 <?php
 
+//==================================================
+// 一般球
+//==================================================
+
 $numbers =
 [
-    intval(
-        $row["NumberOne"]
-    ),
 
-    intval(
-        $row["NumberTwo"]
-    ),
+    $row["NumberOne"],
 
-    intval(
-        $row["NumberThree"]
-    ),
+    $row["NumberTwo"],
 
-    intval(
-        $row["NumberFour"]
-    ),
+    $row["NumberThree"],
 
-    intval(
-        $row["NumberFive"]
-    )
+    $row["NumberFour"],
+
+    $row["NumberFive"]
+
 ];
 
+
+//==================================================
+// 特殊球
+//==================================================
+
+$specialNumber =
+    null;
+
+
+if (
+    $ballCount === 7
+)
+{
+
+    // NumberSix 是第六顆一般球
+    $numbers[] =
+        $row["NumberSix"];
+
+
+    // NumberSeven 是特殊球
+    $specialNumber =
+        $row["NumberSeven"];
+
+}
+
+
+//==================================================
+// 順球
+//
+// 只有一般球排序
+//
+// 特殊球 NumberSeven
+// 永遠固定在最後
+//==================================================
 
 $sortedNumbers =
     $numbers;
@@ -1314,6 +1467,10 @@ sort(
 );
 
 
+//==================================================
+// 期數
+//==================================================
+
 $period =
     htmlspecialchars(
         (string)$row["Id"],
@@ -1321,6 +1478,10 @@ $period =
         "UTF-8"
     );
 
+
+//==================================================
+// 日期
+//==================================================
 
 $date =
     htmlspecialchars(
@@ -1371,11 +1532,32 @@ $date =
 
 <span class="ball drop-ball">
 
-<?= $number ?>
+<?= htmlspecialchars(
+    (string)$number,
+    ENT_QUOTES,
+    "UTF-8"
+) ?>
 
 </span>
 
 <?php endforeach; ?>
+
+
+<?php if (
+    $specialNumber !== null
+): ?>
+
+<span class="ball special-ball">
+
+<?= htmlspecialchars(
+    (string)$specialNumber,
+    ENT_QUOTES,
+    "UTF-8"
+) ?>
+
+</span>
+
+<?php endif; ?>
 
 
 </div>
@@ -1388,6 +1570,21 @@ $date =
 <div class="order-cell">
 
 
+<?php
+
+//==================================================
+// 7 球彩種
+//
+// $sortedNumbers 目前包含：
+// NumberOne ~ NumberSix
+//
+// NumberSeven 尚未加入
+// 所以直接輸出一般球
+//==================================================
+
+?>
+
+
 <?php foreach (
     $sortedNumbers
     as $number
@@ -1395,11 +1592,32 @@ $date =
 
 <span class="ball order-ball">
 
-<?= $number ?>
+<?= htmlspecialchars(
+    (string)$number,
+    ENT_QUOTES,
+    "UTF-8"
+) ?>
 
 </span>
 
 <?php endforeach; ?>
+
+
+<?php if (
+    $specialNumber !== null
+): ?>
+
+<span class="ball special-ball">
+
+<?= htmlspecialchars(
+    (string)$specialNumber,
+    ENT_QUOTES,
+    "UTF-8"
+) ?>
+
+</span>
+
+<?php endif; ?>
 
 
 </div>
@@ -1469,7 +1687,8 @@ $date =
 
 <?php
 
-$pages = [];
+$pages =
+    [];
 
 
 if (
