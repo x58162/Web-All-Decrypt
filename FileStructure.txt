@@ -1,0 +1,209 @@
+Web-All-Decrypt
+│
+├── index.php
+│   │
+│   ├── require → config.php
+│   │
+│   ├── require → push_config.php
+│   │
+│   ├── require → menu.php
+│   │
+│   ├── 彩種參數
+│   │   │
+│   │   ├── ?lottery=dailycash
+│   │   │   └── 今彩539
+│   │   │
+│   │   ├── ?lottery=biglottery
+│   │   │   └── 大樂透
+│   │   │
+│   │   ├── ?lottery=fantasy5
+│   │   │   └── 天天樂
+│   │   │
+│   │   └── ?lottery=marksix
+│   │       └── 香港六合彩
+│   │
+│   ├── contents
+│   │   ├── SELECT
+│   │   ├── status = 1
+│   │   └── lottery_type = 目前彩種
+│   │
+│   ├── 分頁
+│   │   └── ?page=N
+│   │
+│   ├── 管理按鈕
+│   │   └── → admin.php
+│   │
+│   └── 通知系統
+│       │
+│       ├── JavaScript
+│       │   │
+│       │   ├── → /sw.js
+│       │   │
+│       │   ├── → /subscribe.php
+│       │   │
+│       │   └── → /index.php?push_check=1
+│       │
+│       └── Push
+│
+│
+├── admin.php
+│   │
+│   ├── require → config.php
+│   │
+│   ├── require → push_config.php
+│   │
+│   ├── require → vendor/autoload.php
+│   │
+│   ├── 📝 新增內容
+│   │   │
+│   │   └── admin.php
+│   │       ├── 圖片上傳
+│   │       │   └── uploads/
+│   │       │
+│   │       ├── INSERT
+│   │       │   └── contents
+│   │       │
+│   │       └── 新增成功
+│   │           └── sendPushNotification()
+│   │
+│   ├── 👁 顯示 / 隱藏
+│   │   │
+│   │   └── admin.php
+│   │       └── UPDATE contents.status
+│   │
+│   ├── 🔄 0 / 1 / 2 狀態
+│   │   │
+│   │   └── admin.php
+│   │       └── UPDATE contents.is_enabled
+│   │
+│   ├── 🗑 刪除
+│   │   │
+│   │   └── admin.php
+│   │       ├── DELETE contents
+│   │       └── DELETE uploads/圖片
+│   │
+│   └── 讀取內容
+│       └── SELECT contents
+│
+│
+├── edit.php
+│   │
+│   ├── require → config.php
+│   ├── GET → ?id=XXX
+│   ├── SELECT → contents
+│   ├── 修改文字
+│   ├── 更換圖片
+│   └── UPDATE → contents
+│
+│   ⚠️ 目前尚未確認有前台/後台入口連到它
+│
+│
+├── dailycash.php
+│   │
+│   ├── require → config.php
+│   │
+│   ├── ?lottery=dailycash
+│   │   └── → lottery.dailycash
+│   │
+│   ├── ?lottery=biglottery
+│   │   └── → lottery.biglottery
+│   │
+│   ├── ?lottery=fantasy5
+│   │   └── → lottery.fantasy5
+│   │
+│   └── ?lottery=marksix
+│       └── → lottery.marksix
+│
+│
+├── ticket_generator.php
+│   │
+│   ├── 開獎單
+│   ├── 彩種
+│   ├── 日期
+│   ├── 順球 / 落球
+│   └── PNG 產生
+│
+│
+├── menu.php
+│   │
+│   ├── 高機率版路
+│   │   │
+│   │   ├── → index.php?lottery=dailycash
+│   │   ├── → index.php?lottery=biglottery
+│   │   ├── → index.php?lottery=fantasy5
+│   │   └── → index.php?lottery=marksix
+│   │
+│   ├── 開獎結果
+│   │   │
+│   │   ├── → dailycash.php?lottery=dailycash
+│   │   ├── → dailycash.php?lottery=biglottery
+│   │   ├── → dailycash.php?lottery=fantasy5
+│   │   └── → dailycash.php?lottery=marksix
+│   │
+│   └── 開獎單
+│       └── → ticket_generator.php
+│
+│
+├── subscribe.php
+│   │
+│   ├── POST JSON
+│   ├── require → config.php
+│   └── INSERT / UPDATE
+│       └── push_subscriptions
+│
+│
+├── send_push.php
+│   │
+│   ├── POST
+│   ├── require → config.php
+│   ├── vendor/autoload.php
+│   ├── WebPush
+│   └── push_subscriptions
+│
+│
+├── sw.js
+│   │
+│   ├── Service Worker
+│   ├── 接收 Push
+│   ├── 讀取 lottery_type
+│   ├── 讀取 url
+│   └── notificationclick
+│       └── → index.php?lottery=XXX
+│
+│
+├── push_config.php
+│   └── VAPID
+│
+├── generate_vapid.php
+│   └── 產生 VAPID Key
+│
+├── config.php
+│   └── MySQL PDO
+│
+├── sitemap.php
+│   └── Sitemap
+│
+├── robots.txt
+│   └── 搜尋引擎規則
+│
+├── ads.txt
+│   └── Google AdSense
+│
+├── style.css
+│   └── 全站 CSS
+│
+├── favicon.ico
+│   └── 網站圖示 / Push icon
+│
+├── phpinfo.php
+│   └── PHP 資訊
+│
+├── composer.json
+├── composer.lock
+│   └── Web Push / Composer
+│
+├── database.sql
+│   └── 初始資料庫結構
+│
+└── uploads/
+    └── 文章圖片
