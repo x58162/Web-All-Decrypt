@@ -1,0 +1,23 @@
+{
+    "name": "x58162/all-decrypt",
+    "autoload": {
+        "psr-4": {
+            "X58162\\AllDecrypt\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "x58162",
+            "email": "x58162@gmail.com"
+        }
+    ],
+    "require": {
+        "minishlink/web-push": "^11.0",
+        "php-http/guzzle7-adapter": "^1.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}
