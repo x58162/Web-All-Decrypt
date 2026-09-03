@@ -2013,6 +2013,8 @@ if (
 <html lang="zh-TW">
 
 <head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8646014509722763"
+     crossorigin="anonymous"></script>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <meta charset="UTF-8">
 

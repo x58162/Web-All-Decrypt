@@ -1,6 +1,11 @@
 <?php
 
 //==================================================
+// All-Decrypt｜首頁
+//==================================================
+
+
+//==================================================
 // Database
 //==================================================
 
@@ -33,19 +38,16 @@ if (
         $rawInput =
             file_get_contents("php://input");
 
-
         $data =
             json_decode(
                 $rawInput,
                 true
             );
 
-
         $endpoint =
             isset($data["endpoint"])
             ? trim($data["endpoint"])
             : "";
-
 
         if (
             $endpoint === ""
@@ -64,7 +66,6 @@ if (
             exit;
         }
 
-
         $pushCheckStatement =
             $pdo->prepare(
                 "
@@ -79,7 +80,6 @@ if (
                 "
             );
 
-
         $pushCheckStatement->execute(
             [
                 ":endpoint" =>
@@ -87,12 +87,10 @@ if (
             ]
         );
 
-
         $pushRecord =
             $pushCheckStatement->fetch(
                 PDO::FETCH_ASSOC
             );
-
 
         echo json_encode(
             [
@@ -106,14 +104,12 @@ if (
             JSON_UNESCAPED_UNICODE |
             JSON_UNESCAPED_SLASHES
         );
-
     }
     catch (
         Throwable $e
     )
     {
         http_response_code(500);
-
 
         echo json_encode(
             [
@@ -127,7 +123,6 @@ if (
             JSON_UNESCAPED_SLASHES
         );
     }
-
 
     exit;
 }
@@ -205,7 +200,6 @@ if (
                 "
             );
 
-
         $checkStatement->execute(
             [
                 ":ip" =>
@@ -213,10 +207,8 @@ if (
             ]
         );
 
-
         $visitor =
             $checkStatement->fetch();
-
 
         if (
             $visitor
@@ -237,7 +229,6 @@ if (
                     WHERE id = :id
                     "
                 );
-
 
             $updateStatement->execute(
                 [
@@ -264,7 +255,6 @@ if (
                     )
                     "
                 );
-
 
             $insertStatement->execute(
                 [
@@ -428,7 +418,6 @@ $page =
     ? intval($_GET["page"])
     : 1;
 
-
 if (
     $page < 1
 )
@@ -455,14 +444,12 @@ $countStatement =
         "
     );
 
-
 $countStatement->execute(
     [
         ":lottery_type" =>
             $lotteryType
     ]
 );
-
 
 $totalItems =
     intval(
@@ -475,7 +462,6 @@ $totalItems =
 //==================================================
 
 $totalPages = 0;
-
 
 if (
     $totalItems > 0
@@ -542,12 +528,10 @@ LIMIT :limit
 OFFSET :offset
 ";
 
-
 $statement =
     $pdo->prepare(
         $sql
     );
-
 
 $statement->bindValue(
     ":lottery_type",
@@ -555,13 +539,11 @@ $statement->bindValue(
     PDO::PARAM_STR
 );
 
-
 $statement->bindValue(
     ":limit",
     $itemsPerPage,
     PDO::PARAM_INT
 );
-
 
 $statement->bindValue(
     ":offset",
@@ -569,9 +551,7 @@ $statement->bindValue(
     PDO::PARAM_INT
 );
 
-
 $statement->execute();
-
 
 $items =
     $statement->fetchAll(
@@ -585,7 +565,6 @@ $items =
 
 $canonicalUrl =
     "https://all-decrypt.com/index.php";
-
 
 if (
     $lotteryType !== "dailycash"
@@ -648,7 +627,13 @@ $websiteSchema =
 <html lang="zh-Hant">
 
 <head>
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<link
+    rel="icon"
+    type="image/x-icon"
+    href="/favicon.ico"
+>
+
 <meta charset="UTF-8">
 
 <meta
@@ -657,7 +642,6 @@ $websiteSchema =
 >
 
 <title>
-
 <?= htmlspecialchars(
     $siteTitle,
     ENT_QUOTES,
@@ -761,21 +745,184 @@ $websiteSchema =
 >
 
 
+<!--==================================================
+     Google AdSense
+==================================================-->
+
+<script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8646014509722763"
+    crossorigin="anonymous">
+</script>
+
+
 <style>
+
+/*==================================================
+  All-Decrypt 首頁 UI
+==================================================*/
+
+:root
+{
+    --ad-bg:
+        #0d0b10;
+
+    --ad-bg-soft:
+        #141118;
+
+    --ad-card:
+        rgba(
+            255,
+            255,
+            255,
+            0.045
+        );
+
+    --ad-card-hover:
+        rgba(
+            255,
+            255,
+            255,
+            0.075
+        );
+
+    --ad-border:
+        rgba(
+            255,
+            255,
+            255,
+            0.085
+        );
+
+    --ad-text:
+        #f4f1f8;
+
+    --ad-text-soft:
+        #aaa4b4;
+
+    --ad-text-muted:
+        #777180;
+
+    --ad-purple:
+        #8b68ff;
+
+    --ad-purple-soft:
+        #6f4ee8;
+
+    --ad-green:
+        #25d979;
+
+    --ad-red:
+        #ff566e;
+
+    --ad-gray:
+        #8b8792;
+}
+
 
 /*==================================================
   Body
 ==================================================*/
 
+html
+{
+    scroll-behavior: smooth;
+}
+
+
 body
 {
     margin: 0;
 
-    background: #1a1717;
-
     padding: 0;
 
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(
+                105,
+                76,
+                185,
+                0.18
+            ),
+            transparent 35%
+        ),
+        linear-gradient(
+            180deg,
+            #0c0a0f 0%,
+            #100d12 45%,
+            #0a090d 100%
+        );
+
+    color:
+        var(--ad-text);
+
     box-sizing: border-box;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        "Microsoft JhengHei",
+        Arial,
+        sans-serif;
+}
+
+
+*
+{
+    box-sizing: border-box;
+}
+
+
+/*==================================================
+  Page
+==================================================*/
+
+.page
+{
+    position: relative;
+
+    min-height: 100vh;
+
+    overflow: hidden;
+}
+
+
+.page::before
+{
+    content: "";
+
+    position: fixed;
+
+    top: -180px;
+
+    left: 50%;
+
+    width: 600px;
+
+    height: 400px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            112,
+            78,
+            255,
+            0.07
+        );
+
+    filter:
+        blur(90px);
+
+    pointer-events: none;
+
+    z-index: 0;
 }
 
 
@@ -787,14 +934,291 @@ body
 {
     position: relative;
 
+    z-index: 100;
+
     width: 100%;
 
-    box-sizing: border-box;
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.055
+        );
+
+    background:
+        rgba(
+            10,
+            8,
+            13,
+            0.82
+        );
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
 }
 
 
 /*==================================================
-  Label
+  管理按鈕
+==================================================*/
+
+.admin-button
+{
+    position: fixed;
+
+    top: 18px;
+
+    right: 20px;
+
+    z-index: 9999;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 64px;
+
+    padding:
+        8px
+        15px;
+
+    border:
+        1px solid
+        rgba(
+            139,
+            104,
+            255,
+            0.35
+        );
+
+    border-radius: 10px;
+
+    background:
+        rgba(
+            75,
+            52,
+            130,
+            0.28
+        );
+
+    color:
+        #d9ceff;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 8px 25px
+        rgba(
+            0,
+            0,
+            0,
+            0.25
+        );
+
+    transition:
+        all 0.2s ease;
+}
+
+
+.admin-button:hover
+{
+    transform:
+        translateY(-2px);
+
+    background:
+        rgba(
+            110,
+            78,
+            190,
+            0.42
+        );
+
+    border-color:
+        rgba(
+            150,
+            120,
+            255,
+            0.55
+        );
+
+    color: #ffffff;
+}
+
+
+/*==================================================
+  Main Content
+==================================================*/
+
+.content-list
+{
+    position: relative;
+
+    z-index: 2;
+
+    width:
+        min(
+            calc(
+                100% - 30px
+            ),
+            1000px
+        );
+
+    margin:
+        0
+        auto;
+
+    padding:
+        35px
+        0
+        70px;
+}
+
+
+/*==================================================
+  頂部資訊
+==================================================*/
+
+.content-list::before
+{
+    content:
+        "ALL-DECRYPT  /  " attr(data-lottery);
+
+    display: none;
+}
+
+
+/*==================================================
+  Content Item
+==================================================*/
+
+.content-item
+{
+    position: relative;
+
+    width: 100%;
+
+    margin-bottom: 14px;
+
+    border:
+        1px solid
+        var(--ad-border);
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(
+                255,
+                255,
+                255,
+                0.055
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                0.018
+            )
+        );
+
+    box-shadow:
+        0
+        10px
+        35px
+        rgba(
+            0,
+            0,
+            0,
+            0.22
+        );
+
+    overflow: visible;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.content-item:hover
+{
+    border-color:
+        rgba(
+            139,
+            104,
+            255,
+            0.28
+        );
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(
+                255,
+                255,
+                255,
+                0.075
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                0.025
+            )
+        );
+
+    box-shadow:
+        0
+        15px
+        45px
+        rgba(
+            0,
+            0,
+            0,
+            0.3
+        );
+}
+
+
+.content-item.open
+{
+    border-color:
+        rgba(
+            139,
+            104,
+            255,
+            0.4
+        );
+
+    box-shadow:
+        0
+        15px
+        55px
+        rgba(
+            50,
+            25,
+            120,
+            0.18
+        );
+}
+
+
+/*==================================================
+  Label Wrapper
 ==================================================*/
 
 .label-wrapper
@@ -803,90 +1227,645 @@ body
 
     width: 100%;
 
-    display: block;
+    min-height: 72px;
+
+    display: flex;
+
+    align-items: stretch;
 }
 
+
+/*==================================================
+  Status Badge
+==================================================*/
 
 .label-enabled-status
 {
     position: absolute;
 
-    left: -30px;
+    left: 14px;
 
-    top: 20px;
+    top: 50%;
 
     z-index: 20;
 
-    display: block;
+    transform:
+        translateY(-50%);
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 54px;
+
+    height: 30px;
 
     padding:
-        4px
-        9px;
+        0
+        11px;
 
-    border-radius: 4px;
+    border-radius: 8px;
 
     color: #ffffff;
 
-    font-size: 22px;
+    font-size: 12px;
 
-    font-weight: bold;
+    font-weight: 800;
 
     line-height: 1;
 
+    letter-spacing: 1px;
+
     pointer-events: none;
 
-    box-sizing: border-box;
-
     white-space: nowrap;
+
+    box-shadow:
+        0
+        5px
+        15px
+        rgba(
+            0,
+            0,
+            0,
+            0.18
+        );
+}
+
+
+.label-enabled-status::before
+{
+    content: "";
+
+    width: 6px;
+
+    height: 6px;
+
+    margin-right: 6px;
+
+    border-radius: 50%;
+
+    background:
+        currentColor;
+
+    box-shadow:
+        0 0 8px
+        currentColor;
 }
 
 
 .label-enabled-status.waiting
 {
-    background: #6c757d;
+    background:
+        rgba(
+            110,
+            105,
+            120,
+            0.28
+        );
+
+    border:
+        1px solid
+        rgba(
+            160,
+            155,
+            170,
+            0.2
+        );
+
+    color:
+        #c5c0cc;
 }
 
 
 .label-enabled-status.enabled
 {
-    background: #28a745;
+    background:
+        rgba(
+            20,
+            170,
+            90,
+            0.16
+        );
+
+    border:
+        1px solid
+        rgba(
+            37,
+            217,
+            121,
+            0.28
+        );
+
+    color:
+        #4cf39a;
 }
 
 
 .label-enabled-status.disabled
 {
-    background: #dc3545;
+    background:
+        rgba(
+            220,
+            45,
+            75,
+            0.14
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            86,
+            110,
+            0.24
+        );
+
+    color:
+        #ff7184;
 }
 
 
 /*==================================================
-  Content Label
+  Content Label Button
 ==================================================*/
 
 .content-label
 {
     position: relative;
 
+    display: flex;
+
+    align-items: center;
+
     width: 100%;
+
+    min-height: 72px;
+
+    margin: 0;
+
+    padding:
+        17px
+        48px
+        17px
+        94px;
+
+    border: 0;
+
+    outline: 0;
+
+    border-radius: 15px;
+
+    background:
+        transparent;
+
+    color:
+        var(--ad-text);
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    font-weight: 650;
+
+    line-height: 1.5;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.content-label:hover
+{
+    background:
+        rgba(
+            139,
+            104,
+            255,
+            0.035
+        );
+}
+
+
+.content-label:focus-visible
+{
+    box-shadow:
+        inset
+        0
+        0
+        0
+        2px
+        rgba(
+            139,
+            104,
+            255,
+            0.55
+        );
 }
 
 
 .content-label .label-text
 {
-    display: block;
+    display:
+        -webkit-box;
 
-    padding-left: 65px;
+    width: 100%;
+
+    overflow: hidden;
+
+    color:
+        #eeeaf2;
+
+    -webkit-line-clamp: 2;
+
+    -webkit-box-orient: vertical;
+
+    overflow-wrap: anywhere;
 }
 
 
-.content-item
+.content-item.open
+.content-label .label-text
 {
-    overflow: visible !important;
+    color:
+        #ffffff;
 }
 
 
 /*==================================================
-  通知彈出視窗遮罩
+  Arrow
+==================================================*/
+
+.label-arrow
+{
+    position: absolute;
+
+    right: 21px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 30px;
+
+    height: 30px;
+
+    border-radius: 9px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.055
+        );
+
+    color:
+        #938d9e;
+
+    font-size: 10px;
+
+    transition:
+        transform 0.3s ease,
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+
+.content-item.open
+.label-arrow
+{
+    transform:
+        translateY(-50%)
+        rotate(90deg);
+
+    background:
+        rgba(
+            139,
+            104,
+            255,
+            0.16
+        );
+
+    color:
+        #b6a4ff;
+}
+
+
+/*==================================================
+  Image Panel
+==================================================*/
+
+.image-panel
+{
+    max-height: 0;
+
+    overflow: hidden;
+
+    opacity: 0;
+
+    transition:
+        max-height 0.45s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        ),
+        opacity 0.25s ease;
+}
+
+
+.content-item.open
+.image-panel
+{
+    opacity: 1;
+}
+
+
+.image-inner
+{
+    margin:
+        0
+        14px
+        14px;
+
+    padding: 8px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    border-radius: 13px;
+
+    background:
+        rgba(
+            0,
+            0,
+            0,
+            0.28
+        );
+
+    box-shadow:
+        inset
+        0
+        0
+        25px
+        rgba(
+            0,
+            0,
+            0,
+            0.2
+        );
+}
+
+
+.image-inner img
+{
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    max-width: 100%;
+
+    border-radius: 8px;
+
+    background:
+        #111;
+
+    object-fit: contain;
+}
+
+
+/*==================================================
+  Empty Message
+==================================================*/
+
+.empty-message
+{
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 220px;
+
+    padding: 30px;
+
+    border:
+        1px dashed
+        rgba(
+            255,
+            255,
+            255,
+            0.12
+        );
+
+    border-radius: 18px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.025
+        );
+
+    color:
+        var(--ad-text-muted);
+
+    font-size: 15px;
+
+    text-align: center;
+}
+
+
+/*==================================================
+  Pagination
+==================================================*/
+
+.pagination
+{
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    width:
+        min(
+            calc(
+                100% - 30px
+            ),
+            1000px
+        );
+
+    margin:
+        0
+        auto
+        65px;
+}
+
+
+.page-button
+{
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 40px;
+
+    height: 40px;
+
+    padding:
+        0
+        10px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    border-radius: 10px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.035
+        );
+
+    color:
+        #aaa4b2;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    transition:
+        all 0.2s ease;
+}
+
+
+.page-button:hover
+{
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(
+            139,
+            104,
+            255,
+            0.35
+        );
+
+    background:
+        rgba(
+            139,
+            104,
+            255,
+            0.10
+        );
+
+    color:
+        #d7cdff;
+}
+
+
+.page-button.active
+{
+    border-color:
+        rgba(
+            139,
+            104,
+            255,
+            0.6
+        );
+
+    background:
+        linear-gradient(
+            135deg,
+            #7652e8,
+            #9a76ff
+        );
+
+    color:
+        #ffffff;
+
+    box-shadow:
+        0
+        7px
+        22px
+        rgba(
+            110,
+            75,
+            230,
+            0.28
+        );
+}
+
+
+.page-dots
+{
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 30px;
+
+    height: 40px;
+
+    color:
+        #625d68;
+
+    font-size: 14px;
+}
+
+
+/*==================================================
+  Push Modal Overlay
 ==================================================*/
 
 .push-modal-overlay
@@ -907,11 +1886,17 @@ body
 
     background:
         rgba(
-            0,
-            0,
-            0,
-            0.65
+            3,
+            2,
+            5,
+            0.78
         );
+
+    backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
+        blur(8px);
 
     opacity: 0;
 
@@ -920,8 +1905,6 @@ body
     transition:
         opacity 0.25s ease,
         visibility 0.25s ease;
-
-    box-sizing: border-box;
 }
 
 
@@ -933,27 +1916,59 @@ body
 }
 
 
+/*==================================================
+  Push Modal
+==================================================*/
+
 .push-modal
 {
+    position: relative;
+
     width: 100%;
 
-    max-width: 420px;
+    max-width: 430px;
 
-    padding: 30px 25px 25px;
+    padding:
+        32px
+        28px
+        27px;
 
-    border-radius: 16px;
+    border:
+        1px solid
+        rgba(
+            139,
+            104,
+            255,
+            0.20
+        );
 
-    background: #ffffff;
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1b1722,
+            #110f15
+        );
 
     box-shadow:
         0
-        15px
-        50px
+        30px
+        90px
         rgba(
             0,
             0,
             0,
-            0.35
+            0.65
+        ),
+        0
+        0
+        50px
+        rgba(
+            95,
+            55,
+            190,
+            0.08
         );
 
     text-align: center;
@@ -961,15 +1976,22 @@ body
     box-sizing: border-box;
 
     transform:
-        translateY(15px)
-        scale(0.96);
+        translateY(18px)
+        scale(0.95);
 
     transition:
-        transform 0.25s ease;
+        transform 0.28s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
 }
 
 
-.push-modal-overlay.show .push-modal
+.push-modal-overlay.show
+.push-modal
 {
     transform:
         translateY(0)
@@ -977,20 +1999,56 @@ body
 }
 
 
+.push-modal::before
+{
+    content: "";
+
+    position: absolute;
+
+    top: -100px;
+
+    left: 50%;
+
+    width: 200px;
+
+    height: 200px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            117,
+            82,
+            255,
+            0.11
+        );
+
+    filter:
+        blur(50px);
+
+    pointer-events: none;
+}
+
+
 /*==================================================
-  通知圖示
+  Push Icon
 ==================================================*/
 
 .push-modal-icon
 {
-    width: 70px;
+    position: relative;
 
-    height: 70px;
+    width: 72px;
+
+    height: 72px;
 
     margin:
         0
         auto
-        15px;
+        18px;
 
     display: flex;
 
@@ -998,62 +2056,106 @@ body
 
     justify-content: center;
 
-    border-radius: 50%;
+    border:
+        1px solid
+        rgba(
+            139,
+            104,
+            255,
+            0.30
+        );
 
-    background: #007bff;
+    border-radius: 21px;
 
-    color: #ffffff;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(
+                139,
+                104,
+                255,
+                0.20
+            ),
+            rgba(
+                78,
+                52,
+                150,
+                0.10
+            )
+        );
 
-    font-size: 34px;
+    color:
+        #bcaaff;
+
+    font-size: 32px;
+
+    box-shadow:
+        0
+        12px
+        35px
+        rgba(
+            80,
+            50,
+            180,
+            0.18
+        );
 }
 
 
 /*==================================================
-  通知標題
+  Push Title
 ==================================================*/
 
 .push-modal-title
 {
+    position: relative;
+
     margin:
         0
         0
-        10px;
+        11px;
 
-    color: #222222;
+    color:
+        #ffffff;
 
     font-size: 23px;
 
-    font-weight: bold;
+    font-weight: 750;
 
     line-height: 1.4;
 }
 
 
 /*==================================================
-  通知內容
+  Push Text
 ==================================================*/
 
 .push-modal-text
 {
+    position: relative;
+
     margin:
         0
         0
-        22px;
+        25px;
 
-    color: #555555;
+    color:
+        #a7a1ad;
 
-    font-size: 15px;
+    font-size: 14px;
 
-    line-height: 1.7;
+    line-height: 1.8;
 }
 
 
 /*==================================================
-  通知按鈕區
+  Push Actions
 ==================================================*/
 
 .push-modal-actions
 {
+    position: relative;
+
     display: flex;
 
     gap: 10px;
@@ -1063,81 +2165,138 @@ body
 
 
 /*==================================================
-  稍後
+  Later
 ==================================================*/
 
 .push-modal-later
 {
     flex: 1;
 
-    min-height: 46px;
+    min-height: 48px;
 
     border:
-        1px
-        solid
-        #d1d5db;
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.10
+        );
 
-    border-radius: 8px;
+    border-radius: 11px;
 
-    background: #ffffff;
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.045
+        );
 
-    color: #555555;
+    color:
+        #aaa5b0;
 
-    font-size: 15px;
+    font-size: 14px;
 
-    font-weight: bold;
+    font-weight: 650;
 
     cursor: pointer;
+
+    transition:
+        all 0.2s ease;
 }
 
 
 .push-modal-later:hover
 {
-    background: #f3f4f6;
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    color:
+        #ffffff;
 }
 
 
 /*==================================================
-  開啟通知
+  Enable
 ==================================================*/
 
 .push-modal-enable
 {
     flex: 1;
 
-    min-height: 46px;
+    min-height: 48px;
 
     border:
-        1px
-        solid
-        #007bff;
+        1px solid
+        rgba(
+            139,
+            104,
+            255,
+            0.55
+        );
 
-    border-radius: 8px;
+    border-radius: 11px;
 
-    background: #007bff;
+    background:
+        linear-gradient(
+            135deg,
+            #7651e8,
+            #9570ff
+        );
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
-    font-size: 15px;
+    font-size: 14px;
 
-    font-weight: bold;
+    font-weight: 700;
 
     cursor: pointer;
+
+    box-shadow:
+        0
+        8px
+        25px
+        rgba(
+            111,
+            75,
+            225,
+            0.25
+        );
+
+    transition:
+        all 0.2s ease;
 }
 
 
 .push-modal-enable:hover
 {
-    background: #0056b3;
+    transform:
+        translateY(-2px);
 
-    border-color: #0056b3;
+    box-shadow:
+        0
+        12px
+        30px
+        rgba(
+            111,
+            75,
+            225,
+            0.38
+        );
 }
 
 
 .push-modal-enable:disabled,
 .push-modal-later:disabled
 {
-    opacity: 0.6;
+    opacity: 0.55;
 
     cursor: not-allowed;
 }
@@ -1165,24 +2324,51 @@ body
         );
 
     padding:
-        11px
-        16px;
+        12px
+        18px;
 
-    border-radius: 8px;
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.10
+        );
+
+    border-radius: 11px;
 
     background:
+        rgba(
+            17,
+            14,
+            21,
+            0.94
+        );
+
+    box-shadow:
+        0
+        12px
+        35px
         rgba(
             0,
             0,
             0,
-            0.88
+            0.35
         );
 
-    color: #ffffff;
+    backdrop-filter:
+        blur(15px);
 
-    font-size: 14px;
+    -webkit-backdrop-filter:
+        blur(15px);
 
-    line-height: 1.5;
+    color:
+        #eeeaf1;
+
+    font-size: 13px;
+
+    line-height: 1.6;
 
     box-sizing: border-box;
 
@@ -1214,62 +2400,262 @@ body
 
 
 /*==================================================
+  Selection
+==================================================*/
+
+::selection
+{
+    background:
+        rgba(
+            139,
+            104,
+            255,
+            0.35
+        );
+
+    color:
+        #ffffff;
+}
+
+
+/*==================================================
+  Scrollbar
+==================================================*/
+
+::-webkit-scrollbar
+{
+    width: 8px;
+
+    height: 8px;
+}
+
+
+::-webkit-scrollbar-track
+{
+    background:
+        #0a090d;
+}
+
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 20px;
+
+    background:
+        rgba(
+            139,
+            104,
+            255,
+            0.30
+        );
+}
+
+
+::-webkit-scrollbar-thumb:hover
+{
+    background:
+        rgba(
+            139,
+            104,
+            255,
+            0.50
+        );
+}
+
+
+/*==================================================
   Mobile
 ==================================================*/
 
-@media (max-width: 600px)
+@media (
+    max-width: 700px
+)
 {
 
-    .label-enabled-status
+    .admin-button
     {
-        left: 0;
+        top: 10px;
 
-        top: 5px;
+        right: 10px;
 
-        font-size: 15px;
+        min-width: 54px;
 
         padding:
-            4px
-            7px;
+            7px
+            11px;
+
+        font-size: 12px;
     }
 
 
-    .content-label .label-text
+    .content-list
     {
-        padding-left: 55px;
+        width:
+            calc(
+                100% - 20px
+            );
+
+        padding:
+            20px
+            0
+            45px;
+    }
+
+
+    .content-item
+    {
+        margin-bottom: 10px;
+
+        border-radius: 13px;
+    }
+
+
+    .label-wrapper
+    {
+        min-height: 64px;
+    }
+
+
+    .label-enabled-status
+    {
+        left: 10px;
+
+        min-width: 46px;
+
+        height: 27px;
+
+        padding:
+            0
+            8px;
+
+        border-radius: 7px;
+
+        font-size: 10px;
+
+        letter-spacing: 0.5px;
+    }
+
+
+    .label-enabled-status::before
+    {
+        width: 5px;
+
+        height: 5px;
+
+        margin-right: 5px;
+    }
+
+
+    .content-label
+    {
+        min-height: 64px;
+
+        padding:
+            14px
+            43px
+            14px
+            70px;
 
         font-size: 14px;
+
+        line-height: 1.45;
+    }
+
+
+    .label-arrow
+    {
+        right: 12px;
+
+        width: 27px;
+
+        height: 27px;
+
+        border-radius: 8px;
+
+        font-size: 9px;
+    }
+
+
+    .image-inner
+    {
+        margin:
+            0
+            9px
+            9px;
+
+        padding: 5px;
+
+        border-radius: 10px;
+    }
+
+
+    .image-inner img
+    {
+        border-radius: 6px;
+    }
+
+
+    .pagination
+    {
+        width:
+            calc(
+                100% - 20px
+            );
+
+        gap: 5px;
+
+        margin-bottom: 45px;
+    }
+
+
+    .page-button
+    {
+        min-width: 36px;
+
+        height: 36px;
+
+        border-radius: 9px;
+
+        font-size: 12px;
+    }
+
+
+    .page-dots
+    {
+        height: 36px;
+
+        min-width: 20px;
     }
 
 
     .push-modal-overlay
     {
         padding: 15px;
-
-        align-items: center;
     }
 
 
     .push-modal
     {
-        max-width: 360px;
+        max-width: 370px;
 
         padding:
-            25px
-            18px
-            20px;
+            27px
+            20px
+            21px;
 
-        border-radius: 14px;
+        border-radius: 18px;
     }
 
 
     .push-modal-icon
     {
-        width: 60px;
+        width: 62px;
 
-        height: 60px;
+        height: 62px;
 
-        font-size: 29px;
+        border-radius: 18px;
+
+        font-size: 27px;
     }
 
 
@@ -1281,9 +2667,9 @@ body
 
     .push-modal-text
     {
-        font-size: 14px;
+        font-size: 13px;
 
-        line-height: 1.6;
+        line-height: 1.7;
     }
 
 
@@ -1296,28 +2682,89 @@ body
     .push-modal-later,
     .push-modal-enable
     {
-        min-height: 44px;
+        min-height: 45px;
 
-        font-size: 14px;
+        font-size: 13px;
     }
 
 
     .push-status
     {
         bottom: 15px;
+
+        max-width:
+            calc(
+                100vw - 20px
+            );
+
+        padding:
+            10px
+            14px;
+
+        font-size: 12px;
+    }
+
+}
+
+
+/*==================================================
+  Small Mobile
+==================================================*/
+
+@media (
+    max-width: 390px
+)
+{
+
+    .content-label
+    {
+        padding-left: 66px;
+
+        padding-right: 39px;
+
+        font-size: 13px;
+    }
+
+
+    .label-enabled-status
+    {
+        left: 8px;
+
+        min-width: 43px;
+
+        padding:
+            0
+            6px;
+
+        font-size: 9px;
+    }
+
+
+    .label-arrow
+    {
+        right: 9px;
+
+        width: 25px;
+
+        height: 25px;
+    }
+
+
+    .push-modal-actions
+    {
+        flex-direction: column;
+    }
+
+
+    .push-modal-later,
+    .push-modal-enable
+    {
+        width: 100%;
     }
 
 }
 
 </style>
-
-
-<script
-    async
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8646014509722763"
-    crossorigin="anonymous">
-</script>
-
 
 </head>
 
@@ -1473,6 +2920,7 @@ else
     onclick="toggleContent(this)"
     aria-expanded="false"
 >
+
 
 <span class="label-text">
 
@@ -1720,9 +3168,6 @@ if (
 
 
 <?php endif; ?>
-
-
-</div>
 
 
 <!--==================================================
@@ -1999,10 +3444,6 @@ function urlBase64ToUint8Array(
 
 //==================================================
 // 儲存 Subscription
-//
-// 只有使用者按下「開啟通知」
-// 且成功取得 Push Subscription 後
-// 才會呼叫這裡。
 //==================================================
 
 async function savePushSubscription(
@@ -2156,10 +3597,6 @@ async function checkSubscriptionInDatabase(
 
 //==================================================
 // Service Worker
-//
-// 注意：
-// 這裡只負責註冊 Service Worker。
-// 不會因此寫入資料庫。
 //==================================================
 
 async function registerPushServiceWorker()
@@ -2265,8 +3702,6 @@ async function createPushSubscription(
 
 //==================================================
 // 啟用 Push
-//
-// 只有使用者按下按鈕才會執行。
 //==================================================
 
 async function enablePush()
@@ -2286,9 +3721,9 @@ async function enablePush()
             "⏳ 啟用中...";
 
 
-        //==================================================
+        //================================================
         // 檢查瀏覽器支援
-        //==================================================
+        //================================================
 
         if (
             !(
@@ -2329,19 +3764,17 @@ async function enablePush()
         }
 
 
-        //==================================================
+        //================================================
         // 先檢查瀏覽器權限
-        //==================================================
+        //================================================
 
         let permission =
             Notification.permission;
 
 
-        //==================================================
+        //================================================
         // 已經被瀏覽器封鎖
-        //
-        // 不會寫 DB
-        //==================================================
+        //================================================
 
         if (
             permission === "denied"
@@ -2362,11 +3795,9 @@ async function enablePush()
         }
 
 
-        //==================================================
+        //================================================
         // 尚未決定
-        //
-        // 現在才要求瀏覽器權限
-        //==================================================
+        //================================================
 
         if (
             permission === "default"
@@ -2379,11 +3810,9 @@ async function enablePush()
         }
 
 
-        //==================================================
+        //================================================
         // 使用者沒有允許
-        //
-        // 不寫 DB
-        //==================================================
+        //================================================
 
         if (
             permission !== "granted"
@@ -2404,17 +3833,17 @@ async function enablePush()
         }
 
 
-        //==================================================
+        //================================================
         // 註冊 Service Worker
-        //==================================================
+        //================================================
 
         const registration =
             await registerPushServiceWorker();
 
 
-        //==================================================
+        //================================================
         // 取得瀏覽器現有 Subscription
-        //==================================================
+        //================================================
 
         let subscription =
             await getExistingPushSubscription(
@@ -2422,10 +3851,10 @@ async function enablePush()
             );
 
 
-        //==================================================
+        //================================================
         // 沒有 Subscription
         // 才建立新的
-        //==================================================
+        //================================================
 
         if (
             !subscription
@@ -2440,21 +3869,18 @@ async function enablePush()
         }
 
 
-        //==================================================
+        //================================================
         // 最後才寫入資料庫
-        //
-        // 只有使用者主動按「開啟通知」
-        // 才會到這裡。
-        //==================================================
+        //================================================
 
         await savePushSubscription(
             subscription
         );
 
 
-        //==================================================
+        //================================================
         // 成功
-        //==================================================
+        //================================================
 
         closePushModal();
 
@@ -2508,16 +3934,7 @@ async function enablePush()
 
 
 //==================================================
-// 檢查是否需要顯示通知彈窗
-//
-// 重要：
-// 這裡「絕對不寫入資料庫」
-//
-// 只做：
-// 1. 找瀏覽器 Subscription
-// 2. 查 DB
-// 3. DB 有 → 不彈
-// 4. DB 沒有 → 彈
+// 檢查 Push Status
 //==================================================
 
 async function checkPushStatus()
@@ -2526,9 +3943,9 @@ async function checkPushStatus()
     try
     {
 
-        //==================================================
+        //================================================
         // 不支援就不顯示
-        //==================================================
+        //================================================
 
         if (
             !(
@@ -2563,18 +3980,17 @@ async function checkPushStatus()
         }
 
 
-        //==================================================
-        // 注意：
-        //
-        // 這裡不主動建立 Subscription。
-        //
-        // 只註冊 Service Worker，
-        // 然後看看瀏覽器目前有沒有現成 Subscription。
-        //==================================================
+        //================================================
+        // 註冊 Service Worker
+        //================================================
 
         const registration =
             await registerPushServiceWorker();
 
+
+        //================================================
+        // 取得現有 Subscription
+        //================================================
 
         const subscription =
             await getExistingPushSubscription(
@@ -2582,10 +3998,9 @@ async function checkPushStatus()
             );
 
 
-        //==================================================
-        // 情況一：
-        // 瀏覽器有 Subscription
-        //==================================================
+        //================================================
+        // 瀏覽器已有 Subscription
+        //================================================
 
         if (
             subscription
@@ -2598,12 +4013,9 @@ async function checkPushStatus()
                 );
 
 
-            //==================================================
-            // DB 有資料
-            //
-            // 完全不彈窗
-            // 完全不寫 DB
-            //==================================================
+            //================================================
+            // DB 已存在
+            //================================================
 
             if (
                 exists
@@ -2620,17 +4032,9 @@ async function checkPushStatus()
             }
 
 
-            //==================================================
-            // DB 沒有資料
-            //
-            // 重要：
-            //
-            // 以前這裡會自動 savePushSubscription()
-            //
-            // 現在完全取消。
-            //
-            // 改成詢問使用者。
-            //==================================================
+            //================================================
+            // DB 沒有
+            //================================================
 
             console.log(
                 "[Push] 瀏覽器已有 Subscription，但 DB 沒有，顯示詢問視窗"
@@ -2639,12 +4043,9 @@ async function checkPushStatus()
         }
 
 
-        //==================================================
-        // 情況二：
-        // 沒有 Subscription
-        //
-        // 一樣顯示詢問。
-        //==================================================
+        //================================================
+        // 尚無 Subscription
+        //================================================
 
         if (
             !subscription
@@ -2658,9 +4059,9 @@ async function checkPushStatus()
         }
 
 
-        //==================================================
+        //================================================
         // 延遲顯示
-        //==================================================
+        //================================================
 
         setTimeout(
             function()
@@ -2683,11 +4084,6 @@ async function checkPushStatus()
             error
         );
 
-
-        //==================================================
-        // 檢查失敗不影響網站
-        //==================================================
-
     }
 
 }
@@ -2695,13 +4091,6 @@ async function checkPushStatus()
 
 //==================================================
 // 稍後再說
-//
-// 不寫 DB
-// 不寫 Cookie
-// 不寫 localStorage
-// 不寫任何拒絕狀態
-//
-// 下次進網站會再詢問
 //==================================================
 
 pushModalLater.addEventListener(
@@ -2732,8 +4121,6 @@ pushModalEnable.addEventListener(
 
 //==================================================
 // 點擊遮罩關閉
-//
-// 不記錄拒絕
 //==================================================
 
 pushModalOverlay.addEventListener(
@@ -2757,8 +4144,6 @@ pushModalOverlay.addEventListener(
 
 //==================================================
 // ESC 關閉
-//
-// 不記錄拒絕
 //==================================================
 
 document.addEventListener(
@@ -2780,21 +4165,6 @@ document.addEventListener(
 
 
 //==================================================
-// 網頁載入
-//==================================================
-
-window.addEventListener(
-    "load",
-    async function()
-    {
-
-        await checkPushStatus();
-
-    }
-);
-
-
-//==================================================
 // Content 展開
 //==================================================
 
@@ -2809,10 +4179,26 @@ function toggleContent(
         );
 
 
+    if (
+        !item
+    )
+    {
+        return;
+    }
+
+
     const panel =
         item.querySelector(
             ".image-panel"
         );
+
+
+    if (
+        !panel
+    )
+    {
+        return;
+    }
 
 
     const expanded =
@@ -2863,7 +4249,53 @@ function toggleContent(
 
 }
 
+
+//==================================================
+// 視窗尺寸改變時重新計算已開啟圖片高度
+//==================================================
+
+window.addEventListener(
+    "resize",
+    function()
+    {
+
+        document
+            .querySelectorAll(
+                ".content-item.open .image-panel"
+            )
+            .forEach(
+                function(panel)
+                {
+
+                    panel.style.maxHeight =
+                        panel.scrollHeight +
+                        "px";
+
+                }
+            );
+
+    }
+);
+
+
+//==================================================
+// 網頁載入
+//==================================================
+
+window.addEventListener(
+    "load",
+    async function()
+    {
+
+        await checkPushStatus();
+
+    }
+);
+
 </script>
+
+
+</div>
 
 
 </body>
