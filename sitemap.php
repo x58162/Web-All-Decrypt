@@ -192,11 +192,31 @@ $pages =
 
         "priority" =>
             "0.9"
+    ],
+    [
+        "url" =>
+            "/ads.txt",
+
+        "changefreq" =>
+            "daily",
+
+        "priority" =>
+            "0.9"
+    ],
+    [
+        "url" =>
+            "/favicon.ico",
+
+        "changefreq" =>
+            "daily",
+
+        "priority" =>
+            "0.9"
     ]
 
 ];
 
-
+https://all-decrypt.com/favicon.ico
 //==================================================
 // ticket_generator.php
 //
