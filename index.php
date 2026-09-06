@@ -1,4 +1,3 @@
-
 <?php
 
 //==================================================
@@ -561,6 +560,21 @@ $items =
 
 
 //==================================================
+// 頁面內容狀態
+//==================================================
+
+$hasContent =
+    count($items) > 0;
+
+
+// 沒有實際發布內容的頁面不應載入 AdSense，並避免搜尋引擎將其視為可索引內容頁。
+$robotsContent =
+    $hasContent
+    ? "index, follow"
+    : "noindex, follow";
+
+
+//==================================================
 // SEO Canonical
 //==================================================
 
@@ -672,7 +686,11 @@ $websiteSchema =
 
 <meta
     name="robots"
-    content="index, follow"
+    content="<?= htmlspecialchars(
+        $robotsContent,
+        ENT_QUOTES,
+        "UTF-8"
+    ) ?>"
 >
 
 
@@ -746,8 +764,11 @@ $websiteSchema =
 >
 
 
+<?php if ($hasContent): ?>
+
 <!--==================================================
      Google AdSense
+     僅在有實際發布內容時載入
 ==================================================-->
 
 <script
@@ -755,6 +776,8 @@ $websiteSchema =
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8646014509722763"
     crossorigin="anonymous">
 </script>
+
+<?php endif; ?>
 
 
 <style>
@@ -1665,15 +1688,9 @@ body
 
 .empty-message
 {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
     min-height: 220px;
 
-    padding: 30px;
+    padding: 34px 30px;
 
     border:
         1px dashed
@@ -1697,9 +1714,42 @@ body
     color:
         var(--ad-text-muted);
 
-    font-size: 15px;
-
     text-align: center;
+}
+
+
+.empty-message h1
+{
+    margin:
+        0
+        0
+        14px;
+
+    color:
+        #eeeaf2;
+
+    font-size: 21px;
+
+    font-weight: 750;
+
+    line-height: 1.5;
+}
+
+
+.empty-message p
+{
+    max-width: 720px;
+
+    margin:
+        8px
+        auto;
+
+    color:
+        #aaa4b2;
+
+    font-size: 14px;
+
+    line-height: 1.8;
 }
 
 
@@ -2596,6 +2646,28 @@ body
     }
 
 
+    .empty-message
+    {
+        min-height: 200px;
+
+        padding:
+            28px
+            18px;
+    }
+
+
+    .empty-message h1
+    {
+        font-size: 18px;
+    }
+
+
+    .empty-message p
+    {
+        font-size: 13px;
+    }
+
+
     .pagination
     {
         width:
@@ -2820,9 +2892,7 @@ require_once __DIR__ . "/menu.php";
 <main class="content-list">
 
 
-<?php if (
-    count($items) > 0
-): ?>
+<?php if ($hasContent): ?>
 
 
 <?php foreach (
@@ -2972,17 +3042,34 @@ else
 <?php else: ?>
 
 
-<div class="empty-message">
+<section
+    class="empty-message"
+    aria-labelledby="empty-title"
+>
 
-目前沒有
+<h1 id="empty-title">
+目前尚無
 <?= htmlspecialchars(
-    $lotteryTypes[$lotteryType]["name"] ?? "此彩種",
+    $currentLottery["name"],
     ENT_QUOTES,
     "UTF-8"
 ) ?>
-的內容
+的最新資料
+</h1>
 
-</div>
+<p>
+目前這個彩種尚未發布可供查看的分析內容，因此本頁暫時不顯示廣告。
+</p>
+
+<p>
+資料發布後，這裡會提供開獎相關內容與近期資料，方便你直接查看與閱讀。
+</p>
+
+<p>
+你可以稍後再回來查看最新內容；目前也可以從上方選單前往其他已發布資料的彩種。
+</p>
+
+</section>
 
 
 <?php endif; ?>
