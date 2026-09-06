@@ -1,4 +1,3 @@
-
 <?php
 
 //==================================================
@@ -672,7 +671,7 @@ $websiteSchema =
 
 <meta
     name="robots"
-    content="index, follow"
+    content="<?= count($items) > 0 ? "index, follow" : "noindex, follow" ?>"
 >
 
 
@@ -748,13 +747,19 @@ $websiteSchema =
 
 <!--==================================================
      Google AdSense
+     只有頁面存在實際發布商內容時才載入 AdSense。
+     空結果頁不載入廣告，避免在沒有發布商內容的畫面放送廣告。
 ==================================================-->
+
+<?php if (count($items) > 0): ?>
 
 <script
     async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8646014509722763"
     crossorigin="anonymous">
 </script>
+
+<?php endif; ?>
 
 
 <style>
